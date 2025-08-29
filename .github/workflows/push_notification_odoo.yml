@@ -1,0 +1,22 @@
+name: PUSH NOTIFICATION ODOO
+
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  push-notification-odoo:
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Send Push Message"
+        id: "SendPushMessage"
+        uses: fjogeleit/http-request-action@v1
+        with:
+          url: "https://erp.solusiciptamedia.com/scm/notify-pr"
+          method: "POST"
+          customHeaders: '{"Content-Type": "application/json"}'
+          data: '{"username": "${{ secrets.ODOO_BOT_USERNAME }}", "password": "${{ secrets.ODOO_BOT_PASSWORD }}", "db": "${{ secrets.ODOO_BOT_DB }}", "channel_id": 96, "repository_name": "${{ github.event.repository.full_name }}", "type": "push", "branch": "master", "actor": "${{ github.actor }}"}'
+      - name: "Show response"
+        run: |
+          echo ${{ steps.SendPushMessage.outputs.response }}
